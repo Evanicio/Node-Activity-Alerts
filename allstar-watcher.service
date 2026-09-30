@@ -1,0 +1,16 @@
+[Unit]
+Description=Node Activity Alerts - AllStar Watcher
+After=network-online.target asterisk.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=admin
+WorkingDirectory=/home/admin
+ExecStart=/home/admin/hamalerts-venv/bin/python /home/admin/allstar_watcher.py
+Restart=always
+RestartSec=10
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
