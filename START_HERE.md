@@ -60,6 +60,8 @@ QUIET_HOURS_START=23:00
 QUIET_HOURS_END=07:00
 ```
 
+If you are using DMR only, you can leave `ALLSTAR_NODE=12345` unchanged.
+
 Save the file.
 
 ---
@@ -186,6 +188,99 @@ They will continue in the background and start again after a reboot.
 
 ---
 
+# OPTION C — DMR ONLY ON A RASPBERRY PI
+
+Use this option if you want 24/7 DMR alerts but do **not** have an AllStar node.
+
+You only need:
+
+- a Raspberry Pi
+- internet access
+- the ntfy app on your phone
+
+## STEP 4 — Copy the DMR files to the Pi
+
+Copy these files to your Raspberry Pi home folder:
+
+- `dmr_watcher.py`
+- `config.ini`
+- `requirements.txt`
+- `dmr-watcher.service`
+
+You do **not** need:
+
+- `allstar_watcher.py`
+- `allstar-watcher.service`
+
+## STEP 5 — Create the Python environment
+
+SSH into the Raspberry Pi and run:
+
+```bash
+sudo apt install -y python3-venv
+python3 -m venv ~/hamalerts-venv
+source ~/hamalerts-venv/bin/activate
+pip install -r ~/requirements.txt
+```
+
+## STEP 6 — Test the DMR watcher
+
+Run:
+
+```bash
+source ~/hamalerts-venv/bin/activate
+python ~/dmr_watcher.py
+```
+
+You should see a message showing that the DMR watcher is online.
+
+Have another station transmit on your selected DMR talkgroup.
+
+Your own callsign should not send a phone alert.
+
+Press `Ctrl+C` after the test.
+
+## STEP 7 — Make the DMR watcher automatic
+
+The included `dmr-watcher.service` assumes the Raspberry Pi username is `admin`.
+
+If your username is different, edit `dmr-watcher.service` first and replace every occurrence of:
+
+`/home/admin`
+
+with your real home directory.
+
+Also change:
+
+`User=admin`
+
+to your Raspberry Pi username.
+
+Then install the service:
+
+```bash
+sudo cp ~/dmr-watcher.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable dmr-watcher.service
+sudo systemctl restart dmr-watcher.service
+```
+
+Check it:
+
+```bash
+systemctl status dmr-watcher --no-pager
+```
+
+Look for:
+
+`Active: active (running)`
+
+If you see that, you can close SSH.
+
+The Raspberry Pi will continue watching DMR in the background and the watcher will start automatically after a reboot.
+
+---
+
 # LIVE LOGS
 
 DMR:
@@ -238,6 +333,12 @@ with your actual home directory.
 Example:
 
 `/home/kp4abc`
+
+Also change:
+
+`User=admin`
+
+to your actual Linux username.
 
 ---
 
