@@ -11,7 +11,7 @@ After downloading:
 3. Open **START_HERE.md**.
 4. Follow Option A, B, or C.
 
-No GitHub knowledge required.
+No GitHub knowledge required. 
 
 ---
 
