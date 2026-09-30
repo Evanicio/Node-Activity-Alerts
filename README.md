@@ -1,5 +1,20 @@
 # Node Activity Alerts
 
+## ⬇️ DOWNLOAD LATEST VERSION
+
+**[CLICK HERE TO DOWNLOAD NODE ACTIVITY ALERTS (.ZIP)](https://github.com/Evanicio/Node-Activity-Alerts/archive/refs/heads/main.zip)**
+
+After downloading:
+
+1. Open the ZIP.
+2. Extract the folder.
+3. Open **START_HERE.md**.
+4. Follow Option A, B, or C.
+
+No GitHub knowledge required.
+
+---
+
 Simple push notifications for amateur-radio activity.
 
 **Node Activity Alerts** can watch:
