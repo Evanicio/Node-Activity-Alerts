@@ -11,7 +11,7 @@ After downloading:
 3. Open **START_HERE.md**.
 4. Follow Option A, B, or C.
 
-No GitHub knowledge required. 
+No GitHub knowledge required.
 
 ---
 
@@ -48,9 +48,54 @@ Open **START_HERE.md** and follow the steps in order.
 ### Quiet hours
 Both watchers can continue running while phone notifications are suppressed overnight.
 
+## FAQ
+
+### Will it alert me for every transmission?
+No. Nearby transmissions are treated as one conversation. After the configured quiet period passes with no matching activity, the watcher re-arms for the next conversation.
+
+### Does my computer have to stay on?
+Only if you use the Windows DMR option. When installed as a systemd service on a Raspberry Pi or ASL3 node, the watcher keeps running in the background after SSH is closed.
+
+### Does it survive a reboot?
+Yes, when the included systemd services are installed and enabled.
+
+### Will my own transmissions trigger an alert?
+The DMR watcher can ignore the callsign configured in `CALLSIGN`. The AllStar watcher ignores local RF key-ups and watches incoming linked-network activity.
+
+### What are quiet hours?
+The watcher continues running, but phone notifications are suppressed between `QUIET_HOURS_START` and `QUIET_HOURS_END`.
+
+### How do I change how long it waits before another alert?
+Edit this setting in `config.ini`:
+
+```ini
+QUIET_RESET_SECONDS=180
+```
+
+For example, `60` means the watcher can re-arm after 60 seconds of matching silence.
+
+## Troubleshooting
+
+See **[SUPPORT.md](SUPPORT.md)** for copy/paste diagnostics, common problems, and what information to include when asking for help.
+
+Useful quick checks:
+
+```bash
+systemctl status dmr-watcher --no-pager
+systemctl status allstar-watcher --no-pager
+```
+
+Live logs:
+
+```bash
+journalctl -u dmr-watcher -f
+journalctl -u allstar-watcher -f
+```
+
 ## Files
 
 - `START_HERE.md` — easiest setup instructions
+- `SUPPORT.md` — FAQ, troubleshooting, and support diagnostics
 - `config.ini.example` — settings template
 - `dmr_watcher.py` — BrandMeister DMR watcher
 - `allstar_watcher.py` — AllStar watcher
@@ -67,6 +112,8 @@ Your ntfy topic acts like an address for your notifications. Use a long, private
 Example:
 
 `kp4abc-radio-58392-x7q`
+
+When posting logs or opening a GitHub issue, remove your private ntfy topic if it appears anywhere in the output.
 
 ## Intended use
 
