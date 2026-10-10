@@ -121,6 +121,7 @@ Copy these files to the home folder of your ASL3 user:
 - `dmr-watcher.service`
 - `allstar-watcher.service`
 - `install_services.sh`
+- `install_allstar_permissions.sh`
 
 If your ASL3 username is not `admin`, read the note near the bottom before installing the services.
 
@@ -146,7 +147,31 @@ python ~/dmr_watcher.py
 
 Press `Ctrl+C` after the test.
 
-## STEP 7 — Test AllStar
+## STEP 7 — Allow the AllStar watcher to read Asterisk status
+
+The AllStar watcher runs as your Linux user under systemd. It calls
+`sudo /usr/sbin/asterisk -rx "rpt show variables NODE"` every five seconds.
+Without a passwordless permission for this **specific command**, the service
+may appear to be running while repeatedly logging `sudo: a terminal is required`
+and failing to detect remote transmissions.
+
+On the Pi, from the folder containing the downloaded files, run (replace 12345
+with your own AllStar node number):
+
+```bash
+bash ~/install_allstar_permissions.sh 12345
+```
+
+This creates `/etc/sudoers.d/allstar-watcher` for your current Linux username
+and specified node, validates it with `visudo`, and verifies Asterisk access
+without cached sudo credentials. It does **not** grant passwordless access to
+all commands, and it does not modify the DMR watcher.
+
+If the test fails, inspect `sudo -l -U "$(id -un)"` and
+`journalctl -u allstar-watcher -n 30 --no-pager`. Do not use
+`NOPASSWD: ALL`.
+
+## STEP 8 — Test AllStar
 
 Run:
 
@@ -161,7 +186,7 @@ Local RF PTT should not trigger an alert.
 
 Press `Ctrl+C` after the test.
 
-## STEP 8 — Make the watchers automatic
+## STEP 9 — Make the watchers automatic
 
 If your ASL3 username is `admin`, run:
 
