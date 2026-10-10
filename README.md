@@ -59,6 +59,28 @@ Both watchers can continue running while phone notifications are suppressed over
 - `dmr-watcher.service` — Linux/systemd DMR service
 - `allstar-watcher.service` — Linux/systemd AllStar service
 - `install_services.sh` — service installer
+- `install_allstar_permissions.sh` — installs and verifies the narrowly scoped Asterisk sudo permission for ASL3
+
+## AllStar permission requirement
+
+On ASL3, the AllStar watcher reads Asterisk link state using
+`sudo /usr/sbin/asterisk -rx "rpt show variables NODE"`.
+Because the watcher runs unattended, the Linux user needs a passwordless
+sudo rule restricted to that **exact command and node**. Otherwise the
+service may stay active while detection fails with `sudo: a terminal is required`.
+
+For example, on a Pi running node 46651 as user `admin`, the rule is:
+
+```sudoers
+admin ALL=(root) NOPASSWD: /usr/sbin/asterisk -rx rpt show variables 46651
+```
+
+Use `bash ~/install_allstar_permissions.sh 46651` on that Pi after copying
+the script to the home directory. For other stations, substitute their own
+node number. The installer uses the current Linux username, validates the
+sudoers rule, and tests it without cached credentials. See `START_HERE.md`
+for full setup instructions. This is an installation requirement, **not a
+change to either watcher's detection logic**.
 
 ## Important privacy note
 
